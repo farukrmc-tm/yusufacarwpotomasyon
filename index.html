@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinity Kuaför | Yapay Zeka Otomasyonu</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        infinity: {
+                            orange: '#ff6600',
+                            darkOrange: '#cc5200',
+                            lightOrange: '#ff8533',
+                            black: '#050505',
+                            darkGray: '#111111',
+                            panel: '#1a1a1a',
+                        },
+                        wp: {
+                            light: '#25D366',
+                            chatBg: '#0b141a',
+                            msgIn: '#202c33',
+                            msgOut: '#005c4b',
+                            textLight: '#e9edef',
+                            textTime: '#8696a0'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(-5px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at top right, rgba(255, 102, 0, 0.05), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(255, 102, 0, 0.05), transparent 40%);
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #ff8533 0%, #ff6600 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glass Cards */
+        .glass-panel {
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 102, 0, 0.1);
+        }
+
+        /* Phone Mockup Styling */
+        .phone-mockup {
+            width: 320px;
+            height: 650px;
+            border-radius: 40px;
+            border: 10px solid #1f1f1f;
+            background-color: #0b141a;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(255, 102, 0, 0.2), 0 0 0 2px #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background-color: #1f1f1f;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 20;
+        }
+
+        /* Chat Background Pattern */
+        .chat-bg {
+            background-image: url('https://w0.peakpx.com/wallpaper/419/529/HD-wallpaper-whatsapp-dark-black-dark-grey-pattern.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        /* Message Animations */
+        .msg-enter {
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transform-origin: bottom center;
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .typing-dot {
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff6600; }
+    </style>
+</head>
+<body class="antialiased selection:bg-infinity-orange selection:text-white">
+
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-infinity-orange/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-infinity-orange to-infinity-darkOrange flex items-center justify-center text-white text-xl shadow-lg shadow-infinity-orange/30">
+                        <i class="fa-solid fa-infinity"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-heading font-bold text-xl tracking-wider text-white uppercase leading-none">Infinity</span>
+                        <span class="text-[10px] text-infinity-orange tracking-widest uppercase">Kuaför / Yusuf Acar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-16 sm:pt-40 sm:pb-24 lg:pb-32 overflow-hidden relative">
+        <div class="absolute top-20 left-10 w-96 h-96 bg-infinity-orange/10 rounded-full blur-[120px] -z-10"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
+                
+                <div class="lg:col-span-6 text-center lg:text-left mb-16 lg:mb-0">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel text-infinity-lightOrange text-xs font-medium mb-8 border border-infinity-orange/30">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-infinity-orange opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-infinity-orange"></span>
+                        </span>
+                        Yapay Zeka Asistanı Online
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-white leading-tight mb-6">
+                        Salonun <span class="text-gradient">Sosyal Medyasını</span><br> Yapay Zekaya Bırak.
+                    </h1>
+                    <p class="mt-4 text-lg text-gray-400 mb-10 max-w-2xl mx-auto lg:mx-0 font-light">
+                        Müşterilerinize anında, profesyonelce cevap verin. Randevuları otomatik oluşturun, fiyat bilgisini anında sunun. Siz <strong>Infinity</strong> kalitesiyle sanata odaklanın, WhatsApp ve Instagram DM'lerine bot baksın.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="#demo-section" class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-full text-white bg-gradient-to-r from-infinity-orange to-infinity-darkOrange hover:scale-105 transition-transform duration-300 shadow-xl shadow-infinity-orange/20 gap-2">
+                            <i class="fa-solid fa-robot"></i>
+                            Sistemi Canlı Test Et
+                        </a>
+                        <a href="#panel" class="inline-flex items-center justify-center px-8 py-4 text-base font-medium rounded-full text-white glass-panel hover:bg-infinity-panel transition-colors duration-300 border border-white/10">
+                            Patron Panelini İncele
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 flex justify-center lg:justify-end relative">
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-infinity-orange/20 rounded-full blur-[100px] animate-pulse-slow"></div>
+                    
+                    <div class="phone-mockup transform rotate-[-3deg] hover:rotate-0 transition-transform duration-500 border-gray-800">
+                        <div class="phone-notch"></div>
+                        <div class="bg-[#202c33] text-white p-4 pt-8 pb-3 flex items-center gap-3 z-10 relative shadow-md border-b border-gray-800">
+                            <i class="fa-solid fa-arrow-left text-sm text-gray-300"></i>
+                            <div class="w-10 h-10 rounded-full bg-infinity-dark flex items-center justify-center overflow-hidden border border-infinity-orange/50 relative">
+                                <i class="fa-solid fa-infinity text-infinity-orange text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-[15px] leading-tight">Infinity Kuaför</h3>
+                                <p class="text-[11px] text-gray-400">Yusuf Acar Asistanı</p>
+                            </div>
+                            <i class="fa-solid fa-video text-sm mx-2 text-gray-300"></i>
+                            <i class="fa-solid fa-phone text-sm text-gray-300"></i>
+                        </div>
+                        
+                        <div class="flex-1 relative p-4 flex flex-col gap-3 overflow-y-auto z-10">
+                            <div class="chat-bg"></div>
+                            <div class="bg-wp-msgIn text-wp-textLight p-2.5 rounded-xl rounded-tl-sm text-[14px] max-w-[85%] self-start shadow-sm z-10 relative mt-4">
+                                Merhaba! Infinity Kuaför dijital asistanına hoş geldin. ✂️ Nasıl yardımcı olabilirim?
+                                <div class="text-[10px] text-wp-textTime text-right mt-1">10:42</div>
+                            </div>
+                            <div class="bg-wp-msgOut text-wp-textLight p-2.5 rounded-xl rounded-tr-sm text-[14px] max-w-[85%] self-end shadow-sm z-10 relative">
+                                Saç ve Sakal kesimi ne kadar Yusuf usta?
+                                <div class="text-[10px] text-wp-textTime text-right mt-1">10:43 <i class="fa-solid fa-check-double text-blue-400"></i></div>
+                            </div>
+                            <div class="bg-wp-msgIn text-wp-textLight p-2.5 rounded-xl rounded-tl-sm text-[14px] max-w-[85%] self-start shadow-sm z-10 relative">
+                                Güncel fiyatımız:<br>💎 Saç & Sakal: 400 TL<br>Randevu oluşturmak ister misin?
+                                <div class="text-[10px] text-wp-textTime text-right mt-1">10:43</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#202c33] p-2 flex items-center gap-2 z-10 relative">
+                            <i class="fa-regular fa-face-smile text-gray-400 text-xl px-2"></i>
+                            <div class="flex-1 bg-[#2a3942] rounded-full h-10 flex items-center px-4 text-gray-400 text-sm">Mesaj yazın...</div>
+                            <div class="w-10 h-10 rounded-full bg-wp-light flex items-center justify-center text-white"><i class="fa-solid fa-microphone"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section id="ozellikler" class="py-24 bg-infinity-darkGray border-y border-white/5 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-infinity-orange font-bold tracking-widest uppercase text-xs mb-3">Premium Hizmetler</h2>
+                <p class="mt-2 text-3xl leading-8 font-heading font-extrabold tracking-tight text-white sm:text-4xl">
+                    Markanıza Yakışan <br/>Dijital Prestij
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-panel p-8 rounded-2xl hover:-translate-y-2 transition-all duration-300 group border-t border-t-white/10">
+                    <div class="w-12 h-12 bg-infinity-orange/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-infinity-orange/20 transition-colors border border-infinity-orange/20">
+                        <i class="fa-regular fa-calendar-check text-2xl text-infinity-orange"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">7/24 Randevu</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Gece yarısı bile yazan müşterileriniz, boş saatlerinizi görüp anında randevusunu oluşturabilir.</p>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl hover:-translate-y-2 transition-all duration-300 group border-t border-t-white/10">
+                    <div class="w-12 h-12 bg-infinity-orange/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-infinity-orange/20 transition-colors border border-infinity-orange/20">
+                        <i class="fa-solid fa-bell text-2xl text-infinity-orange"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">Sıfır Boş Koltuk</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Randevuya saatler kala müşteriye otomatik hatırlatma gider. İptal eden olursa sıradakine haber verilir.</p>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl hover:-translate-y-2 transition-all duration-300 group border-t border-t-white/10">
+                    <div class="w-12 h-12 bg-infinity-orange/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-infinity-orange/20 transition-colors border border-infinity-orange/20">
+                        <i class="fa-solid fa-list-check text-2xl text-infinity-orange"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">Anında Fiyat Bilgisi</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">"Saç kesimi ne kadar?" sorularına saniyeler içinde, güncel ve detaylı menünüz ile yanıt verilir.</p>
+                </div>
+
+                <div class="glass-panel p-8 rounded-2xl hover:-translate-y-2 transition-all duration-300 group border-t border-t-white/10">
+                    <div class="w-12 h-12 bg-infinity-orange/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-infinity-orange/20 transition-colors border border-infinity-orange/20">
+                        <i class="fa-solid fa-location-dot text-2xl text-infinity-orange"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">Konum & İletişim</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">Yeni müşterilere dükkanın harita linkini, park durumunu ve çalışma saatlerinizi eksiksiz iletir.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="panel" class="py-24 bg-[#050505] border-y border-white/5 relative">
+        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-infinity-orange/5 rounded-full blur-[150px] pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-infinity-orange font-bold tracking-widest uppercase text-xs mb-3">Sistem Yönetimi & CRM</h2>
+                <p class="mt-2 text-3xl leading-8 font-heading font-extrabold tracking-tight text-white sm:text-4xl">
+                    Yusuf Usta'nın Akıllı Komuta Merkezi
+                </p>
+                <p class="mt-4 text-gray-400 max-w-3xl mx-auto text-sm lg:text-base">Siz saç keserken yapay zeka arka planda DM'leri yanıtlar, müşteri veritabanını günceller, geçmiş işlemleri kaydeder ve günlük cironuzu hesaplar.</p>
+            </div>
+
+            <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden shadow-2xl max-w-6xl mx-auto">
+                <div class="bg-[#111] px-4 py-3 border-b border-white/5 flex items-center justify-between">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                    </div>
+                    <div class="text-xs text-gray-500 font-medium flex items-center gap-2"><i class="fa-solid fa-lock text-[10px]"></i> panel.infinitykuafor.com</div>
+                    <div class="w-10"></div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row bg-[#0a0a0a]">
+                    <!-- Sidebar -->
+                    <div class="w-full md:w-64 border-r border-white/5 p-6 flex flex-col gap-6 hidden md:flex shrink-0">
+                        <div class="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                            <div class="w-12 h-12 rounded-full bg-infinity-orange/20 flex items-center justify-center border border-infinity-orange/50 relative">
+                                <span class="text-infinity-orange font-bold text-lg">YA</span>
+                                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#0a0a0a]"></div>
+                            </div>
+                            <div>
+                                <h4 class="text-white text-sm font-bold">Yusuf Acar</h4>
+                                <p class="text-[10px] text-green-400 tracking-wider uppercase font-semibold mt-1">Sistem Aktif</p>
+                            </div>
+                        </div>
+                        <nav class="flex flex-col gap-2 mt-2">
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 bg-infinity-orange/10 text-infinity-orange rounded-xl text-sm font-medium border border-infinity-orange/20 transition-all"><i class="fa-solid fa-calendar-day w-5"></i> Bugünün Ajandası</a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl text-sm font-medium transition-all"><i class="fa-solid fa-users w-5"></i> Müşteri Veritabanı</a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl text-sm font-medium transition-all"><i class="fa-solid fa-chart-pie w-5"></i> Ciro & İstatistikler</a>
+                        </nav>
+                    </div>
+
+                    <!-- Main Dashboard Area -->
+                    <div class="flex-1 p-6 md:p-8 overflow-hidden">
+                        <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-8 gap-6">
+                            <div>
+                                <h3 class="text-2xl font-bold text-white mb-1">Bugünün Özeti</h3>
+                                <p class="text-sm text-gray-400">8 Eylül 2026, Salı</p>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 w-full xl:w-auto">
+                                <div class="bg-[#111] border border-white/10 px-4 py-3 rounded-xl text-center shadow-lg">
+                                    <div class="text-[10px] text-gray-500 mb-1 uppercase tracking-wider">Randevu</div>
+                                    <div class="text-xl font-bold text-white">14</div>
+                                </div>
+                                <div class="bg-[#111] border border-white/10 px-4 py-3 rounded-xl text-center shadow-lg">
+                                    <div class="text-[10px] text-gray-500 mb-1 uppercase tracking-wider">Bekleyen</div>
+                                    <div class="text-xl font-bold text-blue-400">3</div>
+                                </div>
+                                <div class="bg-[#111] border border-infinity-orange/20 px-4 py-3 rounded-xl text-center shadow-lg relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-infinity-orange/5"></div>
+                                    <div class="text-[10px] text-infinity-lightOrange mb-1 uppercase tracking-wider relative z-10">Bot Yanıtı</div>
+                                    <div class="text-xl font-bold text-infinity-orange relative z-10">42 <i class="fa-solid fa-arrow-trend-up text-xs ml-1"></i></div>
+                                </div>
+                                <div class="bg-[#111] border border-white/10 px-4 py-3 rounded-xl text-center shadow-lg">
+                                    <div class="text-[10px] text-gray-500 mb-1 uppercase tracking-wider">Tahmini Ciro</div>
+                                    <div class="text-xl font-bold text-[#25D366]">5.200 ₺</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <!-- Timeline -->
+                            <div class="lg:col-span-2 space-y-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Randevu Akışı</h4>
+                                    <button class="text-xs text-infinity-orange hover:text-white transition-colors"><i class="fa-solid fa-plus"></i> Manuel Ekle</button>
+                                </div>
+                                
+                                <div class="bg-[#111]/50 border border-white/5 p-4 rounded-xl flex items-center gap-4 opacity-70">
+                                    <div class="flex flex-col items-center justify-center w-16 border-r border-white/10 pr-4">
+                                        <span class="text-gray-500 font-bold">10:00</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-white font-medium line-through decoration-gray-600">Ahmet Yılmaz</h4>
+                                        <p class="text-xs text-gray-500">Saç & Sakal Kesimi</p>
+                                    </div>
+                                    <div class="px-3 py-1 bg-green-500/10 text-green-500 border border-green-500/20 rounded-full text-[10px] uppercase font-bold tracking-wider">Tamamlandı</div>
+                                </div>
+                                
+                                <div class="bg-gradient-to-r from-infinity-orange/10 to-transparent border border-infinity-orange/30 p-4 rounded-xl flex items-center gap-4 relative overflow-hidden shadow-[0_0_15px_rgba(255,102,0,0.1)]">
+                                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-infinity-orange shadow-[0_0_10px_#ff6600]"></div>
+                                    <div class="flex flex-col items-center justify-center w-16 border-r border-infinity-orange/20 pr-4">
+                                        <span class="text-infinity-orange font-bold text-lg">11:30</span>
+                                        <span class="text-[9px] text-gray-400 mt-1 uppercase">Şu An</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-white font-bold text-lg">Caner Şahin <i class="fa-solid fa-star text-yellow-500 text-xs ml-1" title="VIP Müşteri"></i></h4>
+                                        <p class="text-xs text-gray-300 mt-1">Saç Kesimi + Keratin Bakımı</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="text-right hidden sm:block mr-2">
+                                            <div class="text-xs text-gray-500">Tutar</div>
+                                            <div class="text-sm font-bold text-white">650 ₺</div>
+                                        </div>
+                                        <div class="px-3 py-1.5 bg-infinity-orange/20 text-infinity-orange border border-infinity-orange/30 rounded-full text-[10px] uppercase font-bold tracking-wider flex items-center gap-2">
+                                            <span class="w-2 h-2 rounded-full bg-infinity-orange animate-pulse"></span> Koltukta
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-[#111] border border-white/5 p-4 rounded-xl flex items-center gap-4 hover:border-white/10 transition-colors">
+                                    <div class="flex flex-col items-center justify-center w-16 border-r border-white/10 pr-4">
+                                        <span class="text-gray-300 font-bold">13:00</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-white font-medium">Burak Demir</h4>
+                                        <p class="text-xs text-gray-500">Sakal Kesimi</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center gap-1 bg-[#25D366]/10 px-2 py-1 rounded text-[#25D366] text-[10px] font-medium border border-[#25D366]/20">
+                                            <i class="fa-brands fa-whatsapp"></i> Bot Aldı
+                                        </div>
+                                        <div class="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-[10px] uppercase font-bold tracking-wider">Onaylı</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <!-- Yeni Eklenen Müşteri Veritabanı Analizi Bölümü -->
+                                <div class="bg-[#111] border border-white/10 rounded-xl p-5 shadow-lg">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa-solid fa-database text-infinity-orange"></i>
+                                            <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Müşteri Veritabanı</h4>
+                                        </div>
+                                        <span class="text-[10px] bg-green-500/10 text-green-500 px-2 py-1 rounded border border-green-500/20 font-medium">Aktif Müşteri</span>
+                                    </div>
+                                    
+                                    <div class="bg-[#0a0a0a] p-4 rounded-lg border border-white/5 relative mb-4">
+                                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-infinity-orange to-transparent opacity-50"></div>
+                                        <div class="flex justify-between items-start mb-3">
+                                            <div>
+                                                <h5 class="text-white font-bold text-base">Caner Şahin</h5>
+                                                <p class="text-xs text-gray-400 mt-1"><i class="fa-solid fa-mobile-screen-button text-[10px] mr-1"></i> 0532 555 ** **</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="text-xs text-gray-500">Toplam Ziyaret</div>
+                                                <div class="text-lg font-bold text-white">12</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-2 gap-2 text-xs mb-4">
+                                            <div class="bg-[#111] p-2 rounded border border-white/5">
+                                                <span class="block text-gray-500 mb-1">Son Geliş</span>
+                                                <span class="text-gray-300 font-medium">24 Gün Önce</span>
+                                            </div>
+                                            <div class="bg-[#111] p-2 rounded border border-white/5">
+                                                <span class="block text-gray-500 mb-1">Favori İşlem</span>
+                                                <span class="text-gray-300 font-medium">Saç & Keratin</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="space-y-2 text-xs border-t border-white/5 pt-3">
+                                            <div class="flex items-start gap-2">
+                                                <i class="fa-solid fa-robot text-infinity-orange mt-0.5"></i>
+                                                <span class="text-gray-300 leading-relaxed"><strong>AI Notu:</strong> Genelde akşam saatlerini (18:00 sonrası) tercih ediyor. Geçen ay saç dökülmesine karşı özel şampuan önerildi, bugün tekrar hatırlatılabilir.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- İşlem Butonları (Tuşlar Detaylandırıldı) -->
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button class="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs py-2 rounded transition-colors font-medium">
+                                            <i class="fa-solid fa-clock-rotate-left"></i> Geçmiş İşlemler
+                                        </button>
+                                        <button class="flex items-center justify-center gap-2 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-[#25D366] text-xs py-2 rounded transition-colors font-medium">
+                                            <i class="fa-brands fa-whatsapp"></i> Kampanya Gönder
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Canlı AI Logu -->
+                                <div class="bg-[#111] border border-white/10 rounded-xl p-5 shadow-lg flex flex-col h-[280px]">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa-solid fa-microchip text-infinity-orange"></i>
+                                            <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Canlı Bot Logu</h4>
+                                        </div>
+                                        <span class="relative flex h-2.5 w-2.5">
+                                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="flex-1 overflow-y-hidden relative text-xs space-y-3 font-mono">
+                                        <div class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-[#111] to-transparent z-10 pointer-events-none"></div>
+                                        
+                                        <div class="flex gap-3 items-start animate-fade-in">
+                                            <span class="text-green-500 font-bold shrink-0">[10:58]</span>
+                                            <p class="text-gray-300 leading-tight">🤖 <span class="text-purple-400">Instagram'dan</span> gelen "Fiyatlar nedir?" sorusu yanıtlandı.</p>
+                                        </div>
+                                        <div class="flex gap-3 items-start animate-fade-in opacity-90">
+                                            <span class="text-green-500 font-bold shrink-0">[10:55]</span>
+                                            <p class="text-gray-300 leading-tight">📅 <strong>Burak Demir</strong> WhatsApp randevu hatırlatmasını onayladı.</p>
+                                        </div>
+                                        <div class="flex gap-3 items-start animate-fade-in opacity-70">
+                                            <span class="text-yellow-500 font-bold shrink-0">[10:42]</span>
+                                            <p class="text-gray-300 leading-tight">⚠️ 15:30 randevusu iptal oldu. Yedek listedeki <strong>Ali Y.</strong>'ye boşluk mesajı atıldı.</p>
+                                        </div>
+                                        <div class="flex gap-3 items-start animate-fade-in opacity-50">
+                                            <span class="text-green-500 font-bold shrink-0">[10:15]</span>
+                                            <p class="text-gray-300 leading-tight">🤖 <span class="text-[#25D366]">WhatsApp'tan</span> yeni müşteri (Ahmet) veritabanına eklendi.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo-section" class="py-24 relative overflow-hidden bg-infinity-black">
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-infinity-orange/5 rounded-full blur-[150px] pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-heading font-extrabold text-white sm:text-4xl">Sistemi Canlı Test Edin</h2>
+                <p class="mt-4 text-gray-400">Platformu seçin ve yapay zekanın arka planda nasıl çalıştığını görün.</p>
+            </div>
+
+            <div class="flex justify-center mb-12 gap-4">
+                <button onclick="setPlatform('wp')" id="btn-wp" class="px-6 py-2.5 rounded-full bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(37,211,102,0.15)]"><i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp</button>
+                <button onclick="setPlatform('ig')" id="btn-ig" class="px-6 py-2.5 rounded-full glass-panel text-gray-400 border border-white/10 hover:text-white flex items-center gap-2 transition-all"><i class="fa-brands fa-instagram text-lg"></i> Instagram</button>
+            </div>
+
+            <div class="lg:grid lg:grid-cols-12 lg:gap-12 items-center">
+                <div class="lg:col-span-5 mb-10 lg:mb-0 flex flex-col gap-4">
+                    <button onclick="playScenario('randevu')" id="btn-sc-randevu" class="demo-btn active text-left p-6 rounded-2xl glass-panel border-l-4 border-infinity-orange hover:bg-infinity-panel transition-all group">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-white group-hover:text-infinity-orange transition-colors"><i class="fa-regular fa-calendar-plus text-infinity-orange w-6"></i> Yeni Randevu Alma</h3>
+                            <i class="fa-solid fa-chevron-right text-gray-600 group-hover:text-infinity-orange"></i>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-400">Müşterinin tarih/saat seçerek randevu oluşturması.</p>
+                    </button>
+
+                    <button onclick="playScenario('fiyat')" id="btn-sc-fiyat" class="demo-btn text-left p-6 rounded-2xl glass-panel border-l-4 border-transparent hover:border-infinity-orange/50 hover:bg-infinity-panel transition-all group">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-white group-hover:text-infinity-orange transition-colors"><i class="fa-solid fa-tags text-infinity-orange w-6"></i> Fiyat Listesi Sorma</h3>
+                            <i class="fa-solid fa-chevron-right text-gray-600 group-hover:text-infinity-orange"></i>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-400">Hizmet fiyatlarının otomatik sunumu.</p>
+                    </button>
+
+                    <button onclick="playScenario('konum')" id="btn-sc-konum" class="demo-btn text-left p-6 rounded-2xl glass-panel border-l-4 border-transparent hover:border-infinity-orange/50 hover:bg-infinity-panel transition-all group">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-white group-hover:text-infinity-orange transition-colors"><i class="fa-solid fa-map-location-dot text-infinity-orange w-6"></i> Konum & Adres Sorma</h3>
+                            <i class="fa-solid fa-chevron-right text-gray-600 group-hover:text-infinity-orange"></i>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-400">Erzurum MNG AVM lokasyonunun müşteriye tarifi.</p>
+                    </button>
+
+                    <button onclick="playScenario('hatirlatma')" id="btn-sc-hatirlatma" class="demo-btn text-left p-6 rounded-2xl glass-panel border-l-4 border-transparent hover:border-infinity-orange/50 hover:bg-infinity-panel transition-all group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-infinity-orange/10 rounded-bl-full -z-10"></div>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-white group-hover:text-infinity-orange transition-colors"><i class="fa-solid fa-bell-concierge text-infinity-orange w-6"></i> Akıllı Hatırlatma <span class="ml-2 text-[10px] bg-infinity-orange text-white px-2 py-0.5 rounded-full animate-pulse">YENİ</span></h3>
+                            <i class="fa-solid fa-chevron-right text-gray-600 group-hover:text-infinity-orange"></i>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-400">Randevu hatırlatması, iptal yönetimi ve yedek müşteri çağırma.</p>
+                    </button>
+                </div>
+
+                <div class="lg:col-span-7 flex justify-center">
+                    <div class="phone-mockup transform rotate-[-3deg] hover:rotate-0 transition-transform duration-500 border-gray-800">
+                        <div class="phone-notch"></div>
+                        
+                        <!-- WP Ekranı -->
+                        <div id="mockup-wp" class="flex flex-col h-full w-full">
+                            <div class="bg-[#202c33] text-white p-4 pt-8 pb-3 flex items-center gap-3 z-10 relative shadow-md">
+                                <i class="fa-solid fa-arrow-left text-sm text-gray-300"></i>
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#111] to-[#333] flex items-center justify-center border border-infinity-orange/30">
+                                    <span class="font-heading font-bold text-infinity-orange text-xs">INF</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-[15px] leading-tight">Infinity Kuaför</h3>
+                                    <p id="bot-status-wp" class="text-[11px] text-gray-400">Yusuf Acar</p>
+                                </div>
+                                <i class="fa-solid fa-video text-sm mx-2 text-gray-300"></i>
+                                <i class="fa-solid fa-phone text-sm text-gray-300"></i>
+                            </div>
+                            <div id="chat-container-wp" class="flex-1 relative p-4 flex flex-col gap-3 overflow-y-auto z-10 scroll-smooth">
+                                <div class="chat-bg"></div>
+                            </div>
+                            <div class="bg-[#202c33] p-2 flex items-center gap-2 z-10 relative">
+                                <i class="fa-regular fa-face-smile text-gray-400 text-xl px-2"></i>
+                                <div class="flex-1 bg-[#2a3942] rounded-full h-10 flex items-center px-4 text-gray-400 text-sm truncate">Sistem test ediliyor...</div>
+                                <div class="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center text-white"><i class="fa-solid fa-paper-plane"></i></div>
+                            </div>
+                        </div>
+
+                        <!-- IG Ekranı -->
+                        <div id="mockup-ig" class="flex flex-col h-full w-full hidden bg-black">
+                            <div class="bg-black text-white p-4 pt-8 pb-3 flex items-center justify-between border-b border-gray-800 z-10 relative">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-arrow-left text-lg"></i>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 p-[2px]">
+                                            <div class="w-full h-full bg-black rounded-full flex items-center justify-center border border-black">
+                                                <span class="font-heading font-bold text-white text-[10px]">INF</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <h3 class="font-bold text-[14px] leading-tight flex items-center gap-1">infinitykuafor <i class="fa-solid fa-circle-check text-blue-500 text-xs"></i></h3>
+                                            <p id="bot-status-ig" class="text-[11px] text-gray-500">Yusuf Acar</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-circle-info text-xl"></i>
+                            </div>
+                            <div id="chat-container-ig" class="flex-1 relative p-4 flex flex-col gap-3 overflow-y-auto z-10 scroll-smooth">
+                            </div>
+                            <div class="bg-black p-3 z-10 relative">
+                                <div class="flex-1 bg-[#262626] border border-gray-700 rounded-full h-11 flex items-center px-4 gap-3 text-white text-sm">
+                                    <div class="bg-blue-500 rounded-full w-7 h-7 flex items-center justify-center -ml-1">
+                                        <i class="fa-solid fa-camera text-white text-xs"></i>
+                                    </div>
+                                    <span class="flex-1 text-gray-400">Mesaj gönder...</span>
+                                    <i class="fa-solid fa-microphone text-gray-400"></i>
+                                    <i class="fa-regular fa-image text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#020202] border-t border-white/5 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center gap-3 mb-4 md:mb-0">
+                <i class="fa-solid fa-infinity text-infinity-orange text-2xl"></i>
+                <div class="flex flex-col">
+                    <span class="text-white font-heading font-bold text-lg leading-none uppercase">Infinity</span>
+                    <span class="text-gray-500 text-[10px] uppercase tracking-widest">Hair & Beauty Studio</span>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm text-center md:text-left">
+                Yusuf Acar &copy; 2026. Tüm hakları saklıdır.
+            </p>
+            <div class="mt-4 md:mt-0 flex space-x-6">
+                <a href="#" class="text-gray-500 hover:text-infinity-orange transition-colors"><i class="fa-brands fa-instagram text-2xl"></i></a>
+                <a href="#" class="text-gray-500 hover:text-infinity-orange transition-colors"><i class="fa-brands fa-whatsapp text-2xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const scenarios = {
+            randevu: [
+                { type: 'in', text: 'Selamlar Yusuf Bey, yarın akşam için boş yeriniz var mı?', delay: 500 },
+                { type: 'out', text: 'Merhaba! 👋 Ben Infinity Kuaför yapay zeka asistanı. Yarın için Yusuf Usta\'nın uygun saatleri şunlardır:<br><br>🕔 17:30<br>🕕 18:15<br>🕖 19:00<br><br>Hangi saati sizin için ayırayım?', delay: 1800 },
+                { type: 'in', text: '18:15 uygun, saç sakal kesimi olacak.', delay: 4000 },
+                { type: 'out', text: 'Harika! ✂️ Yarın 18:15 için Saç & Sakal kesimi randevunuzu oluşturdum. Sisteme kaydedildi.<br><br>Infinity kalitesiyle görüşmek üzere! ⏳', delay: 5500 }
+            ],
+            fiyat: [
+                { type: 'in', text: 'Hayırlı işler, güncel fiyat listenizi öğrenebilir miyim?', delay: 500 },
+                { type: 'out', text: 'Teşekkürler! 💎 Infinity Kuaför Fiyat Listesi:<br><br>✂️ Saç Kesimi: 300 TL<br>🪒 Sakal Kesimi: 150 TL<br>👨‍💼 Saç + Sakal + Yıkama: 400 TL<br>🧴 Keratin Bakımı: 250 TL<br><br>Randevu oluşturmak isterseniz bana yazmanız yeterlidir. 📅', delay: 1500 },
+                { type: 'in', text: 'Teşekkürler.', delay: 4000 },
+                { type: 'out', text: 'Rica ederiz, salonumuza her zaman bekleriz! 🌟', delay: 5000 }
+            ],
+            konum: [
+                { type: 'in', text: 'Kolay gelsin, dükkan tam olarak nerede kalıyor? Arabayla geleceğim yer var mı?', delay: 500 },
+                { type: 'out', text: 'Merhaba! Infinity Hair & Beauty Studio olarak 📍 <strong>Erzurum MNG AVM 2. Kat</strong>\'tayız!<br><br>🚗 AVM\'nin kapalı otoparkını ücretsiz olarak kullanabilirsiniz. Sizi bekliyoruz! ✨', delay: 1500 }
+            ],
+            hatirlatma: [
+                { type: 'out', text: '🔔 <strong>Infinity Kuaför</strong><br><br>Merhaba Ahmet Bey, bugün saat 14:00\'te Yusuf Usta ile randevunuz bulunmaktadır. Onaylıyor musunuz?', delay: 500 },
+                { type: 'in', text: 'Selam, acil bir işim çıktı maalesef gelemeyeceğim iptal edelim.', delay: 3500 },
+                { type: 'out', text: 'Hiç sorun değil Ahmet Bey. Randevunuzu iptal ettim. 🗓️<br><br>🤖 <em>Yapay zeka arka planda bekleme listesindeki müşteriye (Ali Y.) saat 14:00 boşluğu için mesaj gönderiyor...</em>', delay: 5500 },
+                { type: 'out', text: 'Sistem güncellendi. Yeni randevu için bana 7/24 yazabilirsiniz. İyi günler! 🌟', delay: 8500 }
+            ]
+        };
+
+        let currentPlatform = 'wp';
+        let currentScenario = 'randevu';
+        let currentTimers = [];
+
+        function setPlatform(platform) {
+            currentPlatform = platform;
+            const btnWp = document.getElementById('btn-wp');
+            const btnIg = document.getElementById('btn-ig');
+            
+            if(platform === 'wp') {
+                btnWp.className = 'px-6 py-2.5 rounded-full bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(37,211,102,0.15)]';
+                btnIg.className = 'px-6 py-2.5 rounded-full glass-panel text-gray-400 border border-white/10 hover:text-white flex items-center gap-2 transition-all';
+                document.getElementById('mockup-wp').classList.remove('hidden');
+                document.getElementById('mockup-ig').classList.add('hidden');
+            } else {
+                btnIg.className = 'px-6 py-2.5 rounded-full bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(253,29,29,0.3)] border border-transparent';
+                btnWp.className = 'px-6 py-2.5 rounded-full glass-panel text-gray-400 border border-white/10 hover:text-white flex items-center gap-2 transition-all';
+                document.getElementById('mockup-wp').classList.add('hidden');
+                document.getElementById('mockup-ig').classList.remove('hidden');
+            }
+            playScenario(currentScenario);
+        }
+
+        function clearTimers() {
+            currentTimers.forEach(timer => clearTimeout(timer));
+            currentTimers = [];
+        }
+
+        function createTypingIndicator() {
+            const div = document.createElement('div');
+            div.id = 'typing-indicator';
+            
+            if (currentPlatform === 'wp') {
+                div.className = 'bg-wp-msgIn p-3 rounded-xl rounded-tl-sm w-16 self-start shadow-sm z-10 relative mt-2 msg-enter flex items-center justify-center gap-1.5 border border-white/5';
+                div.innerHTML = `<div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div><div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div><div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>`;
+            } else {
+                div.className = 'bg-[#262626] p-3 rounded-2xl rounded-bl-sm w-16 self-start shadow-sm z-10 relative mt-2 msg-enter flex items-center justify-center gap-1.5 border border-white/10';
+                div.innerHTML = `<div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div><div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div><div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>`;
+            }
+            return div;
+        }
+
+        function getCurrentTime() {
+            const now = new Date();
+            return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        }
+
+        function createMessageElement(msg) {
+            const div = document.createElement('div');
+            const timeStr = getCurrentTime();
+            
+            if (currentPlatform === 'wp') {
+                if (msg.type === 'in') {
+                    div.className = 'bg-wp-msgOut text-wp-textLight p-2.5 rounded-xl rounded-tr-sm text-[13px] md:text-[14px] max-w-[85%] self-end shadow-sm z-10 relative mt-2 msg-enter border border-white/5';
+                    div.innerHTML = `${msg.text} <div class="text-[10px] text-wp-textTime text-right mt-1">${timeStr} <i class="fa-solid fa-check-double text-blue-400"></i></div>`;
+                } else {
+                    div.className = 'bg-wp-msgIn text-wp-textLight p-2.5 rounded-xl rounded-tl-sm text-[13px] md:text-[14px] max-w-[85%] self-start shadow-sm z-10 relative mt-2 msg-enter border border-white/5';
+                    div.innerHTML = `${msg.text} <div class="text-[10px] text-wp-textTime text-right mt-1">${timeStr}</div>`;
+                }
+            } else {
+                if (msg.type === 'in') {
+                    div.className = 'bg-gradient-to-r from-[#833ab4] to-[#fd1d1d] text-white p-3 rounded-2xl rounded-br-sm text-[13px] md:text-[14px] max-w-[75%] self-end shadow-sm z-10 relative mt-2 msg-enter';
+                    div.innerHTML = `${msg.text}`;
+                } else {
+                    div.className = 'bg-[#262626] text-white p-3 rounded-2xl rounded-bl-sm text-[13px] md:text-[14px] max-w-[75%] self-start shadow-sm z-10 relative mt-2 msg-enter border border-white/10';
+                    div.innerHTML = `${msg.text}`;
+                }
+            }
+            return div;
+        }
+
+        function playScenario(scenarioKey) {
+            currentScenario = scenarioKey;
+            
+            document.querySelectorAll('.demo-btn').forEach(btn => {
+                btn.classList.remove('border-infinity-orange');
+                btn.classList.add('border-transparent');
+            });
+            const activeBtn = document.getElementById('btn-sc-' + scenarioKey);
+            if(activeBtn) {
+                activeBtn.classList.remove('border-transparent');
+                activeBtn.classList.add('border-infinity-orange');
+            }
+
+            const chatContainer = currentPlatform === 'wp' ? document.getElementById('chat-container-wp') : document.getElementById('chat-container-ig');
+            const botStatus = currentPlatform === 'wp' ? document.getElementById('bot-status-wp') : document.getElementById('bot-status-ig');
+
+            clearTimers();
+            chatContainer.innerHTML = currentPlatform === 'wp' ? '<div class="chat-bg"></div>' : '';
+            botStatus.innerText = 'Yusuf Acar';
+            
+            const messages = scenarios[scenarioKey];
+
+            messages.forEach((msg) => {
+                const timer = setTimeout(() => {
+                    if (msg.type === 'out') {
+                        botStatus.innerText = 'yazıyor...';
+                        if(currentPlatform === 'wp') botStatus.classList.add('text-infinity-orange');
+                        
+                        const typing = createTypingIndicator();
+                        chatContainer.appendChild(typing);
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                        setTimeout(() => {
+                            const tInd = document.getElementById('typing-indicator');
+                            if(tInd) tInd.remove();
+                            botStatus.innerText = 'Yusuf Acar';
+                            if(currentPlatform === 'wp') botStatus.classList.remove('text-infinity-orange');
+                            
+                            chatContainer.appendChild(createMessageElement(msg));
+                            chatContainer.scrollTop = chatContainer.scrollHeight;
+                        }, 1200);
+                    } else {
+                        chatContainer.appendChild(createMessageElement(msg));
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    }
+                }, msg.delay);
+                
+                currentTimers.push(timer);
+            });
+        }
+
+        window.onload = () => {
+            setPlatform('wp');
+        };
+    </script>
+</body>
+</html>
